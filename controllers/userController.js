@@ -1,4 +1,10 @@
+const jwt = require('jsonwebtoken');
+const User = require('../model/User');
 
+const register = async (req, res) => {
+    console.log(req.body);
+    res.json({ status: 200, message: "Register route"});
+}
 
 const login = async (req, res) => {
     res.json({ status: 200, message: "LOGIN route"});
@@ -25,6 +31,7 @@ const myProfile = async (req, res) => {
 }
 
 module.exports = {
+    register,
     login,
     logout,
     verifyEmail,

@@ -3,6 +3,7 @@ const router = express.Router();
 
 // controllers for route
 const {
+    register,
     login,
     logout,
     verifyEmail,
@@ -11,6 +12,8 @@ const {
     myProfile
 } = require('../controllers/userController');
 
+// register
+router.post('/register', register);
 // login
 router.post('/login', login);
 // logout
