@@ -1,8 +1,20 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/User');
 
+const {
+    BadRequest,
+    Unauthorized,
+    Forbidden,
+    NotFound,
+    InternalServerError
+} = require('../error-handling');
+
 const register = async (req, res) => {
-    console.log(req.body);
+    const {firstName, lastName, email, password} = req.body;
+    if(!firstName || !lastName || !email || !password) {
+        throw new BadRequest('Plase provide all field')
+    }
+    // const user = await User.create()
     res.json({ status: 200, message: "Register route"});
 }
 

@@ -2,6 +2,7 @@ require('dotenv').config();
 require('express-async-errors');
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 
 // initialize application
 const app = express();
@@ -18,6 +19,7 @@ const userRoutes = require('./routes/route');
 // middleware
 app.use(express.json());
 app.use('/api/v1', userRoutes);
+app.use(cookieParser(process.env.SECRET));
 
 app.get('/', (req, res) => {
     res.send('hello world')
