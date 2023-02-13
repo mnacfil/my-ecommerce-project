@@ -18,7 +18,7 @@ const userRoutes = require('./routes/route');
 
 // middleware
 app.use(express.json());
-app.use('/api/v1', userRoutes);
+app.use('/api/v1/auth', userRoutes);
 app.use(cookieParser(process.env.SECRET));
 
 app.get('/', (req, res) => {

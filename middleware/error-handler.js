@@ -3,8 +3,8 @@ const { StatusCodes } = require('http-status-codes');
 const errorHandler = (err, req, res, next) => {
     console.log(err);
     let customError = {
-        statusCode: 500,
-        message: 'Something went wrong, Plase try again later.'
+        statusCode: err.status || 500,
+        message: err.name || 'Something went wrong, Plase try again later.'
     }
     // if email already registered,
     if(err.code === 11000) {

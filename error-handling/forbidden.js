@@ -4,7 +4,8 @@ const { StatusCodes } = require('http-status-codes');
 class Forbidden extends CustomAPIError {
     constructor(message) {
         super(message)
-        this.status = StatusCodes.FORBIDDEN
+        this.name = message;
+        this.status = StatusCodes.FORBIDDEN;
     }
 }
 

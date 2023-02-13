@@ -2,7 +2,7 @@ const sendEmail = require('./sendEmail')
 
 const sendEmailVerification = async ({ origin, name, email, verificationToken }) => {
 
-    const link = `${origin}/api/v1/verify-email?verificationToken=${verificationToken}&email=${email}`;
+    const link = `${origin}/api/v1/auth/verify-email?verificationToken=${verificationToken}&email=${email}`;
     const message = `
         <h3>Hello, ${name}</h3>
         <br />

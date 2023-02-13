@@ -10,7 +10,7 @@ const {
     resetPassword,
     forgotPassword,
     myProfile
-} = require('../controllers/userController');
+} = require('../controllers/authController');
 
 // register
 router.post('/register', register);

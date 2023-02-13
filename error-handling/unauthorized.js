@@ -4,7 +4,8 @@ const { StatusCodes } = require('http-status-codes');
 class Unauthorized extends CustomAPIError {
     constructor(message) {
         super(message)
-        this.status = StatusCodes.UNAUTHORIZED
+        this.name = message;
+        this.status = StatusCodes.UNAUTHORIZED;
     }
 }
 
