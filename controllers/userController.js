@@ -1,21 +1,33 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/User');
-
+const crypto = require('crypto');
 const {
-    BadRequest,
-    Unauthorized,
-    Forbidden,
-    NotFound,
-    InternalServerError
-} = require('../error-handling');
+    attachCookiesToResponse,
+    sendEmailVerification
+} = require('../utils');
+
+// const {
+//     BadRequest,
+//     Unauthorized,
+//     Forbidden,
+//     NotFound,
+//     InternalServerError
+// } = require('../error-handling');
 
 const register = async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
-    if(!firstName || !lastName || !email || !password) {
-        throw new BadRequest('Plase provide all field')
-    }
-    // const user = await User.create()
-    res.json({ status: 200, message: "Register route"});
+
+    const verificationToken = crypto.randomBytes(40).toString('hex');
+    const user = await User.create({ firstName, lastName, email, password, verificationToken });
+    // attachCookiesToResponse()
+    const origin = 'http://localhost:5000';
+    await sendEmailVerification({
+        origin,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        verificationToken: user.verificationToken
+    });
+    res.json({ status: 201, message: 'Success!, An email sent to your registered email to verify your account'});
 }
 
 const login = async (req, res) => {

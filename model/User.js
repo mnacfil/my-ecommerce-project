@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: [true, 'Please provide first name'],
-        maxlength: [50, 'Max length of characters exceed']
+        maxlength: [50, 'First name characters exceed, it should be less than 50'],
+        trim: true
     },
     lastName: {
         type: String,
@@ -46,7 +47,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save', async function() {
-    console.log(this.isModified('password'));
+    console.log(`model  ${this.isModified('password')}`);
     if(!this.isModified('password')) return;
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
