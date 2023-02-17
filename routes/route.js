@@ -11,20 +11,24 @@ const {
     forgotPassword,
     myProfile
 } = require('../controllers/authController');
+const {
+    authenticateUser,
+    authorizePermission
+} = require('../middleware/authorized');
 
 // register
 router.post('/register', register);
 // login
 router.post('/login', login);
-// logout
-router.post('/logout', logout);
 // verify-email
-router.post('/verify-email', verifyEmail);
+router.post('/verify-email',  verifyEmail);
+// logout
+router.delete('/logout', authenticateUser, logout);
 // reset-password
-router.post('/reset-password', resetPassword);
+router.post('/reset-password',authenticateUser,  resetPassword);
 // forgot-password
-router.post('/forgot-password', forgotPassword);
+router.post('/forgot-password',authenticateUser,  forgotPassword);
 // my-profile
-router.get('/my-profile', myProfile);
+router.get('/my-profile',authenticateUser, myProfile);
 
 module.exports = router;

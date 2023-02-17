@@ -18,18 +18,19 @@ const userRoutes = require('./routes/route');
 
 // middleware
 app.use(express.json());
-app.use('/api/v1/auth', userRoutes);
 app.use(cookieParser(process.env.SECRET));
+app.use('/api/v1/auth', userRoutes);
 
-app.get('/', (req, res) => {
-    res.send('hello world')
+app.get('/api/v1', (req, res) => {
+    const { accessToken, refreshToken } = req.signedCookies;
+    console.log(accessToken);
+    res.send('hello world');
 })
 
 app.use(errorHandler);
 app.use(notFound);
 
 const port = process.env.PORT || '5000';
-
 
 const startTheServer = async () => {
     try {

@@ -6,7 +6,8 @@ const { StatusCodes } = require('http-status-codes')
 const {
     attachCookiesToResponse,
     sendEmailVerification,
-    userResponseTemplate
+    userResponseTemplate,
+    sendAccountVerifiedEmail
 } = require('../utils');
 
 const {
@@ -31,7 +32,7 @@ const register = async (req, res) => {
     });
     res.json({
         status: StatusCodes.CREATED,
-        message: 'Success!, An email sent to your registered email to verify your account'});
+        message: 'Success!, An email sent to your registered email, Please go to your email to verify your account'});
 }
 
 const verifyEmail = async (req, res) => {
@@ -47,6 +48,11 @@ const verifyEmail = async (req, res) => {
     user.verificationDate = Date.now();
     user.verificationToken = '';
     await user.save();
+    // Send Email saying that the account is verified.
+    await sendAccountVerifiedEmail({
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email
+        });
     res.json({
         status: StatusCodes.OK,
         message: "Account verified, Please go to login"});
@@ -98,7 +104,20 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    res.json({ status: 200, message: "LOGOUT route"});
+    const { accessToken, refreshToken } = req.signedCookies;
+
+    res.clearCookie(accessToken, "Empty cookie", {
+        signed: true,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+    });
+    res.clearCookie(refreshToken, "Empty cookie", {
+        signed: true,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+    });
+
+    res.json({ status: 200, message: "User logged out"});
 }
 
 
