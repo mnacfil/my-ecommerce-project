@@ -7,7 +7,8 @@ const {
     attachCookiesToResponse,
     sendEmailVerification,
     userResponseTemplate,
-    sendAccountVerifiedEmail
+    sendAccountVerifiedEmail,
+    sendResetPasswordLinkEmail
 } = require('../utils');
 
 const {
@@ -18,14 +19,24 @@ const {
     InternalServerError
 } = require('../error-handling');
 
+const localHost = 'http://localhost:5000/api/v1/auth';
+
 const register = async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
 
+    const passwordToken = crypto.randomBytes(60).toString('hex');
     const verificationToken = crypto.randomBytes(40).toString('hex');
-    const user = await User.create({ firstName, lastName, email, password, verificationToken });
-    const origin = 'http://localhost:5000';
+    const user = await User.create({
+        firstName,
+        lastName,
+        email,
+        password,
+        verificationToken,
+        passwordToken
+    });
+
     await sendEmailVerification({
-        origin,
+        localHost,
         name: `${user.firstName} ${user.lastName}`,
         email: user.email,
         verificationToken: user.verificationToken
@@ -121,12 +132,30 @@ const logout = async (req, res) => {
 }
 
 
-const resetPassword = async (req, res) => {
-    res.json({ status: 200, message: "Reset Password route"});
+const forgotPassword = async (req, res) => {
+        console.log(req.user);
+    const { email } = req.body;
+    if(!email) {
+        throw new BadRequest('Email address is required.');
+    }
+    const user = await User.findOne({ email });
+    if(!user) {
+        throw new NotFound(`There's no user with email: ${email}.`);
+    }
+    // Send reset password link
+    await sendResetPasswordLinkEmail({
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        token: user.passwordToken,
+        localHost
+    })
+
+    res.json({ status: 200, message: "Please check your email for reset password link"});
+
 }
 
-const forgotPassword = async (req, res) => {
-    res.json({ status: 200, message: "Forgot Password route"});
+const resetPassword = async (req, res) => {
+    res.json({ status: 200, message: "Reset Password route"});
 }
 
 const myProfile = async (req, res) => {
