@@ -8,7 +8,8 @@ const {
     sendEmailVerification,
     userResponseTemplate,
     sendAccountVerifiedEmail,
-    sendResetPasswordLinkEmail
+    sendResetPasswordLinkEmail,
+    sendPasswordHasBeenChangeEmail
 } = require('../utils');
 
 const {
@@ -24,7 +25,9 @@ const localHost = 'http://localhost:5000/api/v1/auth';
 const register = async (req, res) => {
     const {firstName, lastName, email, password} = req.body;
 
+    // token to be used, to change password
     const passwordToken = crypto.randomBytes(60).toString('hex');
+    // token to be used, to verify email
     const verificationToken = crypto.randomBytes(40).toString('hex');
     const user = await User.create({
         firstName,
@@ -32,7 +35,7 @@ const register = async (req, res) => {
         email,
         password,
         verificationToken,
-        passwordToken
+        passwordToken,
     });
 
     await sendEmailVerification({
@@ -133,7 +136,6 @@ const logout = async (req, res) => {
 
 
 const forgotPassword = async (req, res) => {
-        console.log(req.user);
     const { email } = req.body;
     if(!email) {
         throw new BadRequest('Email address is required.');
@@ -142,6 +144,11 @@ const forgotPassword = async (req, res) => {
     if(!user) {
         throw new NotFound(`There's no user with email: ${email}.`);
     }
+    // expire this token after 8 hours, if the user did not used.
+    const EIGHT_HOURS = 1000 * 60 * 60 * 8;
+    const passwordTokenExpiration = new Date(Date.now() + EIGHT_HOURS);
+    user.passwordTokenExpiration = passwordTokenExpiration;
+    await user.save();
     // Send reset password link
     await sendResetPasswordLinkEmail({
         name: `${user.firstName} ${user.lastName}`,
@@ -155,7 +162,34 @@ const forgotPassword = async (req, res) => {
 }
 
 const resetPassword = async (req, res) => {
-    res.json({ status: 200, message: "Reset Password route"});
+    console.log( req.user );
+    const { token, newPassword, confirmPassword } = req.body;
+    if(!token) {
+        throw new BadRequest('Please provide the password token, in order to changed your password');
+    }
+    if(!newPassword) {
+        throw new BadRequest(`Please provide you're new password`);
+    }
+    if(!confirmPassword) {
+        throw new BadRequest(`Please confirm you're new password`);
+    }
+    const user = await User.findOne({ _id: req.user.userID });
+    if(user.passwordToken !== token || !token) {
+        throw new BadRequest('Invalid token');
+    }
+    if(newPassword !== confirmPassword) {
+        throw new BadRequest('Password does not match.');
+    }
+    // update password in database
+    user.password = confirmPassword;
+    await user.save();
+    // send email, containing New Password has been save
+    await sendPasswordHasBeenChangeEmail({
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email
+    })
+    // redirect to landingpage
+    res.json({ status: 200, message: "Password successfully changed."});
 }
 
 const myProfile = async (req, res) => {

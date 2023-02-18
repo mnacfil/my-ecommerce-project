@@ -8,8 +8,7 @@ const authenticateUser = async (req, res, next) => {
     try {
         if(accessToken) {
             const payload = isValidToken(accessToken);
-            console.log(payload);
-            req.user = payload.user;
+            req.user = payload;
             next();
             return;
         }

@@ -3,6 +3,7 @@ const sendEmailVerification = require('./email-verification/sendEmailVerificatio
 const userResponseTemplate = require('./userResponseTemplate');
 const sendAccountVerifiedEmail = require('./sendAccountVerifiedEmail');
 const sendResetPasswordLinkEmail = require('./sendResetPasswordLinkEmail');
+const sendPasswordHasBeenChangeEmail = require('./sendPasswordHasBeenChangeEmail');
 module.exports = {
     createJWT,
     isValidToken,
@@ -10,5 +11,6 @@ module.exports = {
     sendEmailVerification,
     userResponseTemplate,
     sendAccountVerifiedEmail,
-    sendResetPasswordLinkEmail
+    sendResetPasswordLinkEmail,
+    sendPasswordHasBeenChangeEmail
 };
