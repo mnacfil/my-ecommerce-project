@@ -9,7 +9,6 @@ const {
     verifyEmail,
     resetPassword,
     forgotPassword,
-    myProfile
 } = require('../controllers/authController');
 const {
     authenticateUser,
@@ -28,7 +27,5 @@ router.delete('/logout', authenticateUser, logout);
 router.post('/reset-password',authenticateUser,  resetPassword);
 // forgot-password
 router.post('/forgot-password',authenticateUser,  forgotPassword);
-// my-profile
-router.get('/my-profile',authenticateUser, myProfile);
 
 module.exports = router;

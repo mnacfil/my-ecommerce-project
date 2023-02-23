@@ -3,7 +3,7 @@ require('express-async-errors');
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
-
+const morgan = require('morgan');
 // initialize application
 const app = express();
 
@@ -14,12 +14,14 @@ const notFound = require('./middleware/not-found');
 const connectToDb = require('./db/connectToDb');
 
 // routes
-const userRoutes = require('./routes/route');
+const {authRoute, userRoute} = require('./routes');
 
 // middleware
+app.use(morgan('dev'))
 app.use(express.json());
 app.use(cookieParser(process.env.SECRET));
-app.use('/api/v1/auth', userRoutes);
+app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/users', userRoute);
 
 app.get('/api/v1', (req, res) => {
     const { accessToken, refreshToken } = req.signedCookies;

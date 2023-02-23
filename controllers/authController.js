@@ -23,7 +23,7 @@ const {
 const localHost = 'http://localhost:5000/api/v1/auth';
 
 const register = async (req, res) => {
-    const {firstName, lastName, email, password} = req.body;
+    const {firstName, lastName, email, password, mobilePhone} = req.body;
 
     // token to be used, to change password
     const passwordToken = crypto.randomBytes(60).toString('hex');
@@ -33,6 +33,7 @@ const register = async (req, res) => {
         firstName,
         lastName,
         email,
+        mobilePhone,
         password,
         verificationToken,
         passwordToken,
@@ -162,7 +163,6 @@ const forgotPassword = async (req, res) => {
 }
 
 const resetPassword = async (req, res) => {
-    console.log( req.user );
     const { token, newPassword, confirmPassword } = req.body;
     if(!token) {
         throw new BadRequest('Please provide the password token, in order to changed your password');
@@ -192,10 +192,6 @@ const resetPassword = async (req, res) => {
     res.json({ status: 200, message: "Password successfully changed."});
 }
 
-const myProfile = async (req, res) => {
-    res.json({ status: 200, message: "My Profile route"});
-}
-
 module.exports = {
     register,
     login,
@@ -203,5 +199,4 @@ module.exports = {
     verifyEmail,
     resetPassword,
     forgotPassword,
-    myProfile
 }

@@ -1,6 +1,6 @@
 const Token = require('../model/Token');
 const { isValidToken } = require('../utils');
-const { Forbidden, Unauthorized } = require('../error-handling');
+const { Unauthorized } = require('../error-handling');
 const { attachCookiesToResponse } = require('../utils')
 
 const authenticateUser = async (req, res, next) => {
@@ -37,7 +37,7 @@ const authenticateUser = async (req, res, next) => {
 const authorizePermission = (...roles) => {
     return (req, res ,next) => {
         if(!roles.includes(req.user.role)) {
-            throw new Forbidden('Unauthorized to access this resource');
+            throw new Unauthorized('Unauthorized to access this resource');
         }
         next();
     }
@@ -47,5 +47,3 @@ module.exports = {
     authenticateUser,
     authorizePermission
 }
-
-// authorizePermissions
