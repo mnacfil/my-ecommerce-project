@@ -8,10 +8,12 @@ const {
     getProduct,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getAllProductByAdmin
 } = require('../controllers/productController')
 
 router.route('/').get( authenticateUser, getAllProduct)
+router.get('/our-products', authenticateUser, getAllProductByAdmin);
 router.post('/create-product', [authenticateUser, createProduct]);
 router.route('/:id').
     get(authenticateUser, getProduct).

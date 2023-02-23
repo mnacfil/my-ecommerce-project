@@ -10,10 +10,18 @@ const productDetailSchema = new mongoose.Schema({
 })
 
 const ProductSchema = new mongoose.Schema({
+    company: {
+        type: String,
+        required: [true, 'Please provide company']
+    },
     name: {
         type: String,
         required: [true, 'Please provide name of product'],
         minLength: [3, 'Name must be not less than 3 characters']
+    },
+    image: {
+        type: String,
+        default: '/upload/example.jpg'
     },
     price: {
         type: Number,

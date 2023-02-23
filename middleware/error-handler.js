@@ -17,11 +17,11 @@ const errorHandler = (err, req, res, next) => {
     }
     if(err.name === "ValidationError") {
         customError.statusCode = StatusCodes.BAD_REQUEST;
-        customError.message = Object.values(err.errors)[0].message;
+        customError.message = Object.values(err.errors).map(data => data.message);
     }
     if(err.name === 'CastError') {
         customError.statusCode = StatusCodes.NOT_FOUND;
-        customError.message = `No data found with id: ${err.value._id}`;
+        customError.message = `No data found with id: ${err.value}`;
     }
     // res.json({err});
     res.
