@@ -14,7 +14,7 @@ const notFound = require('./middleware/not-found');
 const connectToDb = require('./db/connectToDb');
 
 // routes
-const {authRoute, userRoute, productRoute} = require('./routes');
+const {authRoute, userRoute, productRoute, reviewRoute} = require('./routes');
 
 // middleware
 app.use(morgan('dev'))
@@ -23,6 +23,7 @@ app.use(cookieParser(process.env.SECRET));
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/products', productRoute);
+app.use('/api/v1/reviews', reviewRoute);
 app.get('/api/v1', (req, res) => {
     const { accessToken, refreshToken } = req.signedCookies;
     console.log(accessToken);

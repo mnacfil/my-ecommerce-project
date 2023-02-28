@@ -7,6 +7,9 @@ const getAllProduct = async(req, res) => {
     const products = await Product.find({}).populate({
         path: 'user',
         select: 'firstName lastName'
+    }).populate({
+        path: 'productReviews',
+        select: 'rating message'
     });
     res.status(StatusCodes.OK).json({ products })
 }

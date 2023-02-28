@@ -9,9 +9,14 @@ const errorHandler = (err, req, res, next) => {
     // if email already registered,
     if(err.code === 11000) {
         customError.statusCode = StatusCodes.BAD_REQUEST;
+        console.log(err);
         if(err.keyValue.mobilePhone) {
             customError.message = 'Mobile phone already registered!'
-        } else {
+        }
+        if(err.keyValue.user && err.keyValue.product) {
+            customError.message = 'You already review this product.'
+        }
+        else {
             customError.message = 'Email already registered!'
         }
     }
