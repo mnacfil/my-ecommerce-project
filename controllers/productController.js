@@ -27,7 +27,10 @@ const createProduct = async(req, res) => {
 }
 
 const getProduct = async(req, res) => {
-    const product = await Product.findOne({ _id: req.params.id});
+    const product = await Product.findOne({ _id: req.params.id}).populate({
+        path: 'productReviews',
+        select: 'rating -product message user'
+    });
     if(!product) {
         throw new NotFound(`No product found with id: ${req.params.id}`);
     }

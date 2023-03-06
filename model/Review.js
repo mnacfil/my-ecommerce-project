@@ -20,9 +20,15 @@ const ReviewSchema = new mongoose.Schema({
         ref: 'Product',
         required: true
     },
-},{
-    timestamps: true
-})
+},{ timestamps: true, toJSON: { virtuals: true}, toObject: { virtuals: true} }
+);
+
+ReviewSchema.virtual('users', {
+    ref: 'User',
+    localField: 'user',
+    foreignField: '_id',
+    justOne: false
+});
 
 // Restrict the user to review one product only
 ReviewSchema.index({ user: 1, product: 1}, { unique: true});
